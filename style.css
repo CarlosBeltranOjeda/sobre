@@ -1,0 +1,264 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(to bottom right, #fdd8e6, #e1bee7); /* Degradado rosa a lavanda */
+    font-family: 'Arial', sans-serif;
+    perspective: 1000px;
+}
+
+.envelope-wrapper {
+    position: relative;
+    width: 300px;
+    height: 200px;
+    transform-style: preserve-3d;
+    cursor: pointer; /* Indicar que es clickeable */
+    transition: transform 0.8s ease-in-out;
+}
+
+.envelope {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #fce4ec; /* Rosa muy pálido */
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    transform-style: preserve-3d;
+    /* Patrón sutil de líneas verticales (similar a un tejido) */
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+    background-size: 10px 10px;
+    transition: box-shadow 0.3s ease;
+}
+
+.envelope:hover {
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3); /* Ligeramente más elevado al pasar el ratón */
+}
+
+.envelope-front, .envelope-back, .envelope-lid {
+    position: absolute;
+    background-color: #fce4ec;
+    border-radius: 10px;
+}
+
+.envelope-front {
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    background: linear-gradient(to right, #fce4ec, #f8bbd0); /* Degradado suave */
+}
+
+.envelope-lid {
+    width: 100%;
+    height: 50%;
+    top: 0;
+    left: 0;
+    background: linear-gradient(to bottom, #f8bbd0, #fce4ec);
+    transform-origin: top;
+    /* Animación más elástica para la solapa */
+    transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55), z-index 0s 0.6s; 
+    z-index: 3;
+    overflow: hidden;
+}
+
+.envelope-lid::before { /* Capa de brillo en la solapa */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2); /* Capa blanca semitransparente */
+    mix-blend-mode: overlay; /* Efecto de brillo */
+}
+
+.envelope-lid::after { /* Esto es para la forma triangular de la solapa */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fce4ec;
+    transform: rotateX(180deg);
+    transform-origin: top;
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    background: linear-gradient(to bottom, #f8bbd0, #fce4ec);
+}
+
+.envelope-back {
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background-color: #fce4ec;
+}
+
+.heart {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 38px;
+    height: 38px;
+    background-color: #e91e63; /* Rosa intenso */
+    border-radius: 50%;
+    z-index: 4;
+    box-shadow: 0 0 12px rgba(233, 30, 99, 0.8); /* Brillo más fuerte */
+    transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.3s ease-in-out;
+}
+
+.envelope-wrapper.open .heart {
+    transform: translateX(-50%) rotate(45deg) translateY(-65px) scale(0.75); /* Se mueve y se encoge un poco */
+    opacity: 0; /* Desvanece el corazón */
+}
+
+.heart::before,
+.heart::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #e91e63;
+    border-radius: 50%;
+}
+
+.heart::before {
+    top: -19px;
+    left: 0;
+}
+
+.heart::after {
+    top: 0;
+    left: 19px;
+}
+
+/* Texto "Hazme clic" */
+.envelope-wrapper::before {
+    content: 'Hazme clic';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 60px); /* Debajo del sobre */
+    color: #c2185b; /* Tono morado rojizo */
+    font-size: 1.3em;
+    font-weight: bold;
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    z-index: 5; /* Asegura que esté por encima del sobre */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Pequeña sombra para resaltar */
+}
+
+.envelope-wrapper.open::before {
+    opacity: 0;
+    transform: translate(-50%, 80px); /* Se mueve un poco hacia abajo y se desvanece */
+}
+
+/* Estados al abrir el sobre */
+.envelope-wrapper.open .envelope-lid {
+    transform: rotateX(-180deg); /* Abre la solapa hacia atrás */
+    z-index: 0; /* Mueve la solapa detrás del sobre para que no estorbe */
+}
+
+.card {
+    position: absolute;
+    width: 90%;
+    /* ANTES: max-height: 90%; */ /* ESTO CAUSABA LA BARRA DE SCROLL */
+    /* ANTES: overflow-y: auto; */ /* ESTO ACTIVABA EL SCROLL */
+    height: auto; /* La altura se ajustará al contenido */
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    z-index: 0; /* Por debajo del sobre inicialmente */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) translateY(10px) scale(0.9); /* Empieza un poco más abajo */
+    padding: 25px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column; /* Apila la imagen y el texto verticalmente */
+    justify-content: center;
+    align-items: center; /* Centrar los elementos horizontalmente */
+    text-align: center; /* Centrar el texto */
+    transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.8s ease-in-out, visibility 0.8s;
+    opacity: 0; /* Oculta la carta inicialmente */
+    visibility: hidden; /* Oculta completamente para que no reciba eventos de clic */
+}
+
+.envelope-wrapper.open .card {
+    transform: translate(-50%, -50%) translateY(-10px) scale(1); /* La carta "sale" un poco hacia arriba y se escala a su tamaño real */
+    opacity: 1; /* Muestra la carta */
+    z-index: 5; /* Asegura que la carta esté visible */
+    visibility: visible;
+}
+
+/* Estilos de la imagen dentro de la carta */
+.card-image {
+    max-width: 200px; /* Ancho máximo de la imagen */
+    height: auto; /* Mantiene la proporción */
+    border-radius: 8px; /* Bordes redondeados */
+    margin-bottom: 20px; /* Espacio entre la imagen y el texto */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Sombra para resaltar la imagen */
+}
+
+.card .text-content p {
+    margin: 10px 0;
+    color: #333;
+    font-size: 1.3em;
+    line-height: 1.6;
+    text-align: center; /* Aseguramos que el texto esté centrado */
+}
+
+.card .text-content p:first-child {
+    font-size: 1.6em;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #d81b60;
+}
+
+.card .signature {
+    margin-top: 30px;
+    font-style: italic;
+    font-size: 1.2em;
+    color: #777;
+}
+
+.buttons {
+    margin-top: 35px;
+    display: flex;
+    gap: 25px;
+}
+
+.buttons button {
+    padding: 12px 25px;
+    font-size: 1.2em;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+#yesButton {
+    background-color: #8bc34a; /* Verde más alegre */
+    color: white;
+}
+
+#yesButton:hover {
+    background-color: #689f38;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+#noButton {
+    background-color: #e57373; /* Rojo más suave */
+    color: white;
+}
+
+#noButton:hover {
+    background-color: #d32f2f;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
