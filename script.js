@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Evento para el botón "Sí"
     yesButton.addEventListener('click', () => {
-        alert('¡Qué alegría! ¡Gracias por decir sí, Belinda! ❤️');
+        alert('¡Qué alegría! ¡Gracias por decir que sí, Belinda! ❤️ enviame esa respuesta al WhatsApp! espero tu respuesta beli');
         // Puedes añadir más lógica aquí, como redirigir a otra página,
         // mostrar una animación especial, etc.
     });
